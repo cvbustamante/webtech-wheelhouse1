@@ -1,0 +1,9 @@
+/log/*
+/tmp/*
+/storage/*
+/node_modules
+/app/assets/builds/*
+/public/assets
+/config/master.key
+/config/credentials/*.key
+/.kamal/secrets

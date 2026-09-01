@@ -14,3 +14,16 @@ This repository contains the specification for Wheelhouse that will be used in t
 - [Domain model](docs/domain-model.md)
 - [Decisions](docs/decisions.md)
 - [Wireframes](docs/wireframes.md)
+## Requirements
+
+- Ruby 4.0.4
+- Rails 8.0
+- Node 26.1.0
+- PostgreSQL
+
+## Setup
+
+```bash
+bundle install
+npm install
+bin/rails db:create
