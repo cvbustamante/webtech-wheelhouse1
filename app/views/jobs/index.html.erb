@@ -1,0 +1,19 @@
+<h1>Services</h1>
+
+<p>Our current bicycle repair services and prices.</p>
+
+<% if @jobs.empty? %>
+  <p class="text-muted">No services yet.</p>
+<% else %>
+  <table class="table table-striped table-hover">
+    <thead>
+      <tr>
+        <th>Service</th>
+        <th>Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= render @jobs %>
+    </tbody>
+  </table>
+<% end %>

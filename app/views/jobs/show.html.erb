@@ -1,0 +1,10 @@
+<% content_for :title, @job.name %>
+
+<div class="card">
+  <div class="card-body">
+    <h1 class="card-title h4"><%= @job.name %></h1>
+    <p class="card-text"><%= number_to_currency(@job.price, unit: "$", precision: 0) %></p>
+  </div>
+</div>
+
+<%= link_to "All services", jobs_path, class: "btn btn-outline-secondary mt-3" %>

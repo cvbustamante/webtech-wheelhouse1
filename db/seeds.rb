@@ -87,7 +87,8 @@ datos_bikes = [
   ["CQ-3001", "Cannondale Quick"],
   ["CQ-3002", "Cannondale Quick"],
   ["SA-4001", "Scott Aspect"],
-  ["BC-5001", "Bianchi Camaleonte"]
+  ["BC-5001", "Bianchi Camaleonte"],
+  ["SA-4002", "Scott Aspect"]
 ]
 
 bikes = {}

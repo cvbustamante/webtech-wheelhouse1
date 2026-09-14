@@ -1,0 +1,7 @@
+<tr class="<%= "table-danger" if repair.promised_on < Date.current && repair.picked_up_at.nil? %>">
+  <td><%= link_to repair.bike.serial_number, repair.bike %></td>
+  <td><%= link_to repair.customer.name, repair.customer %></td>
+  <td><%= repair.mechanic ? repair.mechanic.name : "Not assigned" %></td>
+  <td><%= link_to repair.status.tr("_", " "), repair, class: "badge text-bg-secondary text-decoration-none" %></td>
+  <td><%= l(repair.promised_on, format: :long) %></td>
+</tr>

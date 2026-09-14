@@ -1,0 +1,40 @@
+<% content_for :title, "Repair for #{@repair.bike.serial_number}" %>
+
+<div class="card">
+  <div class="card-body">
+    <h1 class="card-title h4">Repair for <%= link_to @repair.bike.serial_number, @repair.bike %></h1>
+    <p class="card-text">Customer: <%= link_to @repair.customer.name, @repair.customer %></p>
+    <p class="card-text">Mechanic: <%= @repair.mechanic ? @repair.mechanic.name : "Not assigned yet" %></p>
+    <p class="card-text">Status: <span class="badge text-bg-secondary"><%= @repair.status.tr("_", " ") %></span></p>
+    <p class="card-text">Promised: <%= l(@repair.promised_on, format: :long) %></p>
+    <p class="card-text">
+      Picked up:
+      <% if @repair.picked_up_at %>
+        <%= l(@repair.picked_up_at, format: :long) %>
+      <% else %>
+        Not picked up yet
+      <% end %>
+    </p>
+  </div>
+</div>
+
+<h2 class="h5 mt-4">Services charged</h2>
+
+<% if @repair.repair_jobs.empty? %>
+  <p class="text-muted">No quote yet.</p>
+<% else %>
+  <table class="table table-sm">
+    <thead>
+      <tr>
+        <th>Service</th>
+        <th>Price charged</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= render @repair.repair_jobs %>
+    </tbody>
+  </table>
+  <p><strong>Total: <%= number_to_currency(@repair.repair_jobs.sum(:price_charged), unit: "$", precision: 0) %></strong></p>
+<% end %>
+
+<%= link_to "All repairs", repairs_path, class: "btn btn-outline-secondary mt-3" %>

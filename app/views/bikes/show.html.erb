@@ -1,0 +1,31 @@
+<% content_for :title, @bike.serial_number %>
+
+<div class="card">
+  <div class="card-body">
+    <h1 class="card-title h4"><%= @bike.serial_number %></h1>
+    <p class="card-text">Model: <%= @bike.bike_model.name %></p>
+  </div>
+</div>
+
+<h2 class="h5 mt-4"><%= pluralize(@bike.repairs.size, "repair") %></h2>
+
+<% if @bike.repairs.empty? %>
+  <p class="text-muted">No repairs yet.</p>
+<% else %>
+  <table class="table table-sm">
+    <thead>
+      <tr>
+        <th>Bike</th>
+        <th>Customer</th>
+        <th>Mechanic</th>
+        <th>Status</th>
+        <th>Promised</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= render @bike.repairs %>
+    </tbody>
+  </table>
+<% end %>
+
+<%= link_to "All bikes", bikes_path, class: "btn btn-outline-secondary mt-3" %>

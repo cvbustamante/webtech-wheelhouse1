@@ -1,0 +1,17 @@
+<h1>Customers</h1>
+
+<% if @customers.empty? %>
+  <p class="text-muted">No customers yet.</p>
+<% else %>
+  <table class="table table-striped table-hover">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Phone</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= render @customers %>
+    </tbody>
+  </table>
+<% end %>

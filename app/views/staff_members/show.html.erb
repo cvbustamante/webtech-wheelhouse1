@@ -1,0 +1,31 @@
+<% content_for :title, @staff_member.name %>
+
+<div class="card">
+  <div class="card-body">
+    <h1 class="card-title h4"><%= @staff_member.name %></h1>
+    <p class="card-text"><%= @staff_member.role %></p>
+  </div>
+</div>
+
+<h2 class="h5 mt-4"><%= pluralize(@staff_member.repairs.size, "repair") %></h2>
+
+<% if @staff_member.repairs.empty? %>
+  <p class="text-muted">No repairs assigned.</p>
+<% else %>
+  <table class="table table-sm">
+    <thead>
+      <tr>
+        <th>Bike</th>
+        <th>Customer</th>
+        <th>Mechanic</th>
+        <th>Status</th>
+        <th>Promised</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= render @staff_member.repairs %>
+    </tbody>
+  </table>
+<% end %>
+
+<%= link_to "All staff", staff_members_path, class: "btn btn-outline-secondary mt-3" %>

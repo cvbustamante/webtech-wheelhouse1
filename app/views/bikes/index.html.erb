@@ -1,0 +1,17 @@
+<h1>Bikes</h1>
+
+<% if @bikes.empty? %>
+  <p class="text-muted">No bikes yet.</p>
+<% else %>
+  <table class="table table-striped table-hover">
+    <thead>
+      <tr>
+        <th>Serial number</th>
+        <th>Model</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= render @bikes %>
+    </tbody>
+  </table>
+<% end %>
