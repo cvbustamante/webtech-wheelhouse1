@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_09_08_031759) do
+ActiveRecord::Schema[8.0].define(version: 2026_09_14_010000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -25,6 +25,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_08_031759) do
     t.string "serial_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["bike_model_id"], name: "index_bikes_on_bike_model_id"
     t.index ["serial_number"], name: "index_bikes_on_serial_number", unique: true
   end
 
@@ -49,6 +50,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_08_031759) do
     t.decimal "price_charged", precision: 8, scale: 2, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["job_id"], name: "index_repair_jobs_on_job_id"
+    t.index ["repair_id"], name: "index_repair_jobs_on_repair_id"
   end
 
   create_table "repairs", force: :cascade do |t|
@@ -60,6 +63,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_08_031759) do
     t.datetime "picked_up_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["bike_id"], name: "index_repairs_on_bike_id"
+    t.index ["customer_id"], name: "index_repairs_on_customer_id"
+    t.index ["mechanic_id"], name: "index_repairs_on_mechanic_id"
   end
 
   create_table "staff_members", force: :cascade do |t|
@@ -68,4 +74,11 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_08_031759) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+
+  add_foreign_key "bikes", "bike_models"
+  add_foreign_key "repair_jobs", "jobs"
+  add_foreign_key "repair_jobs", "repairs"
+  add_foreign_key "repairs", "bikes"
+  add_foreign_key "repairs", "customers"
+  add_foreign_key "repairs", "staff_members", column: "mechanic_id"
 end

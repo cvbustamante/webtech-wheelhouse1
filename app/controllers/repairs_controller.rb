@@ -1,10 +1,9 @@
 class RepairsController < ApplicationController
   def index
-    # las mas urgentes primero, no por id
-    @repairs = Repair.order(:promised_on)
+    @repairs = Repair.includes(:bike, :customer, :mechanic).by_promised_on
   end
 
   def show
-    @repair = Repair.find(params[:id])
+    @repair = Repair.includes(:bike, :customer, :mechanic, repair_jobs: :job).find(params[:id])
   end
 end

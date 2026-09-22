@@ -7,23 +7,20 @@
   </div>
 </div>
 
-<h2 class="h5 mt-4"><%= pluralize(@customer.repairs.size, "repair") %></h2>
+<h2 class="h5 mt-4"><%= pluralize(@customer.bikes.size, "bike") %></h2>
 
-<% if @customer.repairs.empty? %>
-  <p class="text-muted">No repairs yet.</p>
+<% if @customer.bikes.empty? %>
+  <p class="text-muted">No bikes yet.</p>
 <% else %>
   <table class="table table-sm">
     <thead>
       <tr>
-        <th>Bike</th>
-        <th>Customer</th>
-        <th>Mechanic</th>
-        <th>Status</th>
-        <th>Promised</th>
+        <th>Serial number</th>
+        <th>Model</th>
       </tr>
     </thead>
     <tbody>
-      <%= render @customer.repairs %>
+      <%= render @customer.bikes.by_serial_number %>
     </tbody>
   </table>
 <% end %>

@@ -136,8 +136,9 @@ Repair.create!(
   created_at: 1.day.ago
 )
 
-# de aca en adelante ya hay cotizacion, asi que aparecen los repair_jobs
-repair_5 = Repair.create!(
+# de aca en adelante arman las repair_jobs antes de guardar (.new + .build),
+# si no la validacion de que necesita cotizacion las ve vacias todavia
+repair_5 = Repair.new(
   bike_id: bikes["SA-4001"].id,
   customer_id: customers["Ignacio Vera"].id,
   mechanic_id: mecanico_matias.id,
@@ -146,10 +147,11 @@ repair_5 = Repair.create!(
   picked_up_at: nil,
   created_at: 3.days.ago
 )
-RepairJob.create!(repair_id: repair_5.id, job_id: jobs["Tune-up"].id, price_charged: 35000)
-RepairJob.create!(repair_id: repair_5.id, job_id: jobs["Brake adjustment"].id, price_charged: 10000)
+repair_5.repair_jobs.build(job_id: jobs["Tune-up"].id, price_charged: 35000)
+repair_5.repair_jobs.build(job_id: jobs["Brake adjustment"].id, price_charged: 10000)
+repair_5.save!
 
-repair_6 = Repair.create!(
+repair_6 = Repair.new(
   bike_id: bikes["BC-5001"].id,
   customer_id: customers["Sofía Bravo"].id,
   mechanic_id: mecanico_diego.id,
@@ -158,9 +160,10 @@ repair_6 = Repair.create!(
   picked_up_at: nil,
   created_at: 1.day.ago
 )
-RepairJob.create!(repair_id: repair_6.id, job_id: jobs["Chain replacement"].id, price_charged: 9000)
+repair_6.repair_jobs.build(job_id: jobs["Chain replacement"].id, price_charged: 9000)
+repair_6.save!
 
-repair_7 = Repair.create!(
+repair_7 = Repair.new(
   bike_id: bikes["TM-0002"].id,
   customer_id: customers["Tomás Aguilera"].id,
   mechanic_id: mecanico_camila.id,
@@ -169,10 +172,11 @@ repair_7 = Repair.create!(
   picked_up_at: nil,
   created_at: 5.days.ago
 )
-RepairJob.create!(repair_id: repair_7.id, job_id: jobs["Wheel true"].id, price_charged: 15000)
-RepairJob.create!(repair_id: repair_7.id, job_id: jobs["Brake bleed"].id, price_charged: 20000)
+repair_7.repair_jobs.build(job_id: jobs["Wheel true"].id, price_charged: 15000)
+repair_7.repair_jobs.build(job_id: jobs["Brake bleed"].id, price_charged: 20000)
+repair_7.save!
 
-repair_8 = Repair.create!(
+repair_8 = Repair.new(
   bike_id: bikes["GE-1002"].id,
   customer_id: customers["Antonia Reyes"].id,
   mechanic_id: mecanico_matias.id,
@@ -181,10 +185,11 @@ repair_8 = Repair.create!(
   picked_up_at: nil,
   created_at: 2.days.ago
 )
-RepairJob.create!(repair_id: repair_8.id, job_id: jobs["Gear adjustment"].id, price_charged: 10000)
-RepairJob.create!(repair_id: repair_8.id, job_id: jobs["Tyre replacement"].id, price_charged: 12000)
+repair_8.repair_jobs.build(job_id: jobs["Gear adjustment"].id, price_charged: 10000)
+repair_8.repair_jobs.build(job_id: jobs["Tyre replacement"].id, price_charged: 12000)
+repair_8.save!
 
-repair_9 = Repair.create!(
+repair_9 = Repair.new(
   bike_id: bikes["SR-2002"].id,
   customer_id: customers["Rodrigo Paredes"].id,
   mechanic_id: mecanico_diego.id,
@@ -193,9 +198,10 @@ repair_9 = Repair.create!(
   picked_up_at: nil,
   created_at: 4.days.ago
 )
-RepairJob.create!(repair_id: repair_9.id, job_id: jobs["Full bike service"].id, price_charged: 45000)
+repair_9.repair_jobs.build(job_id: jobs["Full bike service"].id, price_charged: 45000)
+repair_9.save!
 
-repair_10 = Repair.create!(
+repair_10 = Repair.new(
   bike_id: bikes["CQ-3002"].id,
   customer_id: customers["Valeria Campos"].id,
   mechanic_id: mecanico_camila.id,
@@ -204,11 +210,12 @@ repair_10 = Repair.create!(
   picked_up_at: nil,
   created_at: 3.days.ago
 )
-RepairJob.create!(repair_id: repair_10.id, job_id: jobs["Bike inspection"].id, price_charged: 15000)
-RepairJob.create!(repair_id: repair_10.id, job_id: jobs["Tube replacement"].id, price_charged: 8000)
-RepairJob.create!(repair_id: repair_10.id, job_id: jobs["Pedal replacement"].id, price_charged: 10000)
+repair_10.repair_jobs.build(job_id: jobs["Bike inspection"].id, price_charged: 15000)
+repair_10.repair_jobs.build(job_id: jobs["Tube replacement"].id, price_charged: 8000)
+repair_10.repair_jobs.build(job_id: jobs["Pedal replacement"].id, price_charged: 10000)
+repair_10.save!
 
-repair_11 = Repair.create!(
+repair_11 = Repair.new(
   bike_id: bikes["TM-0003"].id,
   customer_id: customers["Javier Contreras"].id,
   mechanic_id: mecanico_diego.id,
@@ -217,10 +224,11 @@ repair_11 = Repair.create!(
   picked_up_at: 4.days.ago,
   created_at: 6.days.ago
 )
-RepairJob.create!(repair_id: repair_11.id, job_id: jobs["Tune-up"].id, price_charged: 35000)
-RepairJob.create!(repair_id: repair_11.id, job_id: jobs["Handlebar adjustment"].id, price_charged: 8000)
+repair_11.repair_jobs.build(job_id: jobs["Tune-up"].id, price_charged: 35000)
+repair_11.repair_jobs.build(job_id: jobs["Handlebar adjustment"].id, price_charged: 8000)
+repair_11.save!
 
-repair_12 = Repair.create!(
+repair_12 = Repair.new(
   bike_id: bikes["GE-1003"].id,
   customer_id: customers["Francisca Morales"].id,
   mechanic_id: mecanico_matias.id,
@@ -229,9 +237,10 @@ repair_12 = Repair.create!(
   picked_up_at: Time.current.change(hour: 16),
   created_at: Time.current.change(hour: 9)
 )
-RepairJob.create!(repair_id: repair_12.id, job_id: jobs["Flat tyre repair"].id, price_charged: 8000)
+repair_12.repair_jobs.build(job_id: jobs["Flat tyre repair"].id, price_charged: 8000)
+repair_12.save!
 
-repair_13 = Repair.create!(
+repair_13 = Repair.new(
   bike_id: bikes["SA-4001"].id,
   customer_id: customers["Ignacio Vera"].id,
   mechanic_id: mecanico_camila.id,
@@ -240,9 +249,10 @@ repair_13 = Repair.create!(
   picked_up_at: nil,
   created_at: 1.day.ago
 )
-RepairJob.create!(repair_id: repair_13.id, job_id: jobs["Suspension service"].id, price_charged: 60000)
+repair_13.repair_jobs.build(job_id: jobs["Suspension service"].id, price_charged: 60000)
+repair_13.save!
 
-repair_14 = Repair.create!(
+repair_14 = Repair.new(
   bike_id: bikes["BC-5001"].id,
   customer_id: customers["Pedro Salinas"].id,
   mechanic_id: mecanico_diego.id,
@@ -251,8 +261,9 @@ repair_14 = Repair.create!(
   picked_up_at: 10.months.ago + 6.days,
   created_at: 10.months.ago
 )
-RepairJob.create!(repair_id: repair_14.id, job_id: jobs["Tune-up"].id, price_charged: 30000)
-RepairJob.create!(repair_id: repair_14.id, job_id: jobs["Cassette replacement"].id, price_charged: 20000)
+repair_14.repair_jobs.build(job_id: jobs["Tune-up"].id, price_charged: 30000)
+repair_14.repair_jobs.build(job_id: jobs["Cassette replacement"].id, price_charged: 20000)
+repair_14.save!
 
 Repair.create!(
   bike_id: bikes["CQ-3001"].id,

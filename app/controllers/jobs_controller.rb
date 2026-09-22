@@ -1,6 +1,6 @@
 class JobsController < ApplicationController
   def index
-    @jobs = Job.order(:name)
+    @jobs = Job.by_name
   end
 
   def show
