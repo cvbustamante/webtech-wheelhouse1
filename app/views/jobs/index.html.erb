@@ -2,6 +2,8 @@
 
 <p>Our current bicycle repair services and prices.</p>
 
+<%= link_to "New service", new_job_path, class: "btn btn-primary mb-3" %>
+
 <% if @jobs.empty? %>
   <p class="text-muted">No services yet.</p>
 <% else %>

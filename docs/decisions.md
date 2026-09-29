@@ -14,9 +14,9 @@ The owner says that sometimes a repair is something simple like a flat tyre and 
 
 The owner says that people sometimes sell their bikes and that the second owner should still be able to know what was repaired before. However, the description does not say that the shop needs to keep a record of the bike's current owner.
 
-**Assumption I made:** the system does not store a bike's current owner. Each repair records the customer who brought the bike in for that visit, while the repair history stays connected to the bike itself.
+**Original assumption (Lab 3):** the system does not store a bike's current owner. Each repair records the customer who brought the bike in for that visit, while the repair history stays connected to the bike itself.
 
-**If the answer were that current ownership has to be stored:** `bikes` would need a `current_customer_id` foreign key pointing to `customers`, and it would have to be updated when the shop learns that the bike has a new owner.
+**Revised in Lab 8:** the counter needs to create a bike straight from its owner's page with the owner already selected, and needs to be stopped from deleting a customer who still owns a bike. Both need a real, required `bikes.customer_id`, so I added it. `repairs.customer_id` still exists on its own, since whoever drops the bike off for a specific repair is not always its owner (family member, previous owner, etc.). If the bike is later sold, the shop updates `bikes.customer_id` to the new owner and the old repairs stay linked to the bike either way.
 
 ## 3. Who is allowed to charge less than the listed price?
 

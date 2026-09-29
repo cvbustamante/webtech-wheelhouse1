@@ -2,7 +2,11 @@
 
 ## Diagram
 
-DBML (dbdiagram.io format), updated to match `db/schema.rb` exactly after Lab 5. There are no real foreign keys yet (those arrive in Lab 7), but the relationships are still drawn here so the diagram keeps making sense.
+![Domain model diagram](domain-model.png)
+
+This image is still the one generated from my Lab 3 DBML, so it is out of date (it has `photos`, `diagnosis` and `promised_date`, and no `staff_members`). The DBML below is the one that actually matches the current schema; I did not regenerate the image from it since that needs pasting the DBML into dbdiagram.io by hand.
+
+DBML (dbdiagram.io format), updated to match `db/schema.rb` exactly after Lab 8. Foreign keys are real database constraints since Lab 7.
 
 ```dbml
 Table customers {
@@ -23,6 +27,7 @@ Table bike_models {
 Table bikes {
   id bigint [pk]
   bike_model_id bigint [not null]
+  customer_id bigint [not null]
   serial_number varchar [not null, unique]
   created_at datetime [not null]
   updated_at datetime [not null]
@@ -66,6 +71,7 @@ Table repair_jobs {
 }
 
 Ref: bikes.bike_model_id > bike_models.id
+Ref: bikes.customer_id > customers.id
 Ref: repairs.bike_id > bikes.id
 Ref: repairs.customer_id > customers.id
 Ref: repairs.mechanic_id > staff_members.id
@@ -77,9 +83,9 @@ Ref: repair_jobs.job_id > jobs.id
 
 A `bike_model` can describe many physical bikes, while each bike has one model.
 
-A bike can have many repairs over its life, while each repair belongs to one specific physical bike. This keeps the repair history attached to the bike even if the bike changes owners.
+A customer owns many bikes, while each bike has one registered owner. A bike can have many repairs over its life, while each repair belongs to one specific physical bike. This keeps the repair history attached to the bike even if it later changes owners.
 
-A customer can bring in many repairs over time, while each repair records the customer who brought the bike in for that visit.
+A customer can bring in many repairs over time, while each repair records the customer who brought the bike in for that visit. This is kept separate from the bike's owner because someone other than the owner can drop a bike off (a family member, a previous owner, etc.).
 
 A staff member with role `mechanic` can be assigned to many repairs, while each repair has at most one mechanic assigned (or none yet, if it is still `dropped_off`).
 
@@ -102,6 +108,8 @@ These are the changes compared to my Lab 3 diagram, each with its reason:
 - **`photos` table not created for now**: same reason, arrives in Lab 9.
 
 - **`staff_members` table added, with `repairs.mechanic_id` nullable**: this one is not in my Lab 3 diagram. None of my user stories asked to store staff data, mechanic and counter staff are just roles of whoever uses the system, not something I thought the database needed to keep. But this lab asks the seed to include the three mechanics and the counter person, so I needed somewhere to put them, and `mechanic_id` on `repairs` gave me a real nullable foreign key to work with (a repair that just came in does not have a mechanic assigned yet).
+
+- **`bikes.customer_id` added (Lab 8)**: in `decisions.md` I originally assumed the shop did not need to store a bike's current owner, since a repair already records who dropped the bike off. Lab 8 needs a bike to be created from its owner's page with the owner preselected, and needs deleting a customer who owns a bike to be refused, so a bike now has a required, direct owner. `repairs.customer_id` still exists separately and can name someone other than the owner, since who drops a bike off for a specific repair is not always who owns it.
 
 ## Repair lifecycle
 

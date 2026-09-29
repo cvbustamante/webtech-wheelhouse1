@@ -5,6 +5,10 @@ class Repair < ApplicationRecord
   has_many :repair_jobs, dependent: :destroy
   has_many :jobs, through: :repair_jobs
 
+  accepts_nested_attributes_for :repair_jobs,
+    allow_destroy: true,
+    reject_if: proc { |attrs| attrs["job_id"].blank? }
+
   enum :status, {
     dropped_off: "dropped_off",
     diagnosed: "diagnosed",

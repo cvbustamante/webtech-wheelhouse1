@@ -37,7 +37,7 @@
           <%= link_to "Customers", customers_path, class: "nav-link #{'active' if current_page?(customers_path)}" %>
           <%= link_to "Bikes", bikes_path, class: "nav-link #{'active' if current_page?(bikes_path)}" %>
           <%= link_to "Repairs", repairs_path, class: "nav-link #{'active' if current_page?(repairs_path)}" %>
-          <%= link_to "Services", services_path, class: "nav-link #{'active' if current_page?(services_path)}" %>
+          <%= link_to "Services", jobs_path, class: "nav-link #{'active' if current_page?(jobs_path)}" %>
           <%= link_to "Staff", staff_members_path, class: "nav-link #{'active' if current_page?(staff_members_path)}" %>
           <%= link_to "Visiting", visiting_path, class: "nav-link #{'active' if current_page?(visiting_path)}" %>
           <%= link_to "About", about_path, class: "nav-link #{'active' if current_page?(about_path)}" %>
@@ -47,6 +47,10 @@
   </nav>
 
   <main class="container py-4">
+    <% flash.each do |kind, message| %>
+      <div class="alert <%= kind == "notice" ? "alert-success" : "alert-danger" %>" role="alert"><%= message %></div>
+    <% end %>
+
     <%= yield %>
    </main>
   </body>

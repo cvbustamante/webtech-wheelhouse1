@@ -1,5 +1,7 @@
 <h1>Staff</h1>
 
+<%= link_to "New staff member", new_staff_member_path, class: "btn btn-primary mb-3" %>
+
 <% if @staff_members.empty? %>
   <p class="text-muted">No staff yet.</p>
 <% else %>

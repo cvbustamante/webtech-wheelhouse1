@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_09_14_010000) do
+ActiveRecord::Schema[8.0].define(version: 2026_09_29_150100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -25,7 +25,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_14_010000) do
     t.string "serial_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "customer_id", null: false
     t.index ["bike_model_id"], name: "index_bikes_on_bike_model_id"
+    t.index ["customer_id"], name: "index_bikes_on_customer_id"
     t.index ["serial_number"], name: "index_bikes_on_serial_number", unique: true
   end
 
@@ -76,6 +78,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_14_010000) do
   end
 
   add_foreign_key "bikes", "bike_models"
+  add_foreign_key "bikes", "customers"
   add_foreign_key "repair_jobs", "jobs"
   add_foreign_key "repair_jobs", "repairs"
   add_foreign_key "repairs", "bikes"

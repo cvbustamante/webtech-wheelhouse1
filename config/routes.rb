@@ -3,13 +3,12 @@ Rails.application.routes.draw do
 
   root "pages#home"
 
-  resources :customers, only: [:index, :show]
-  resources :bikes, only: [:index, :show]
-  resources :repairs, only: [:index, :show]
-  resources :jobs, only: [:index, :show]
-  resources :staff_members, only: [:index, :show]
+  resources :customers
+  resources :bikes
+  resources :repairs
+  resources :jobs, path: "services"
+  resources :staff_members, path: "staff"
 
-  get "services", to: "jobs#index", as: :services
   get "visiting", to: "pages#visiting", as: :visiting
   get "about", to: "pages#about", as: :about
 end

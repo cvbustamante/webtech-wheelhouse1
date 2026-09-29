@@ -1,0 +1,52 @@
+<%= form_with model: repair do |f| %>
+  <% if repair.errors.any? %>
+    <div class="alert alert-danger"><%= repair.errors.full_messages.to_sentence %></div>
+  <% end %>
+
+  <div class="mb-3">
+    <%= f.label :bike_id, "Bike", class: "form-label" %>
+    <%= f.collection_select :bike_id, Bike.includes(:bike_model).by_serial_number, :id,
+        ->(bike) { "#{bike.serial_number} (#{bike.bike_model.name})" }, { prompt: "Choose a bike" },
+        class: ["form-select", { "is-invalid" => repair.errors[:bike].any? }] %>
+    <div class="invalid-feedback"><%= repair.errors[:bike].to_sentence %></div>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :customer_id, "Customer", class: "form-label" %>
+    <%= f.collection_select :customer_id, Customer.by_name, :id, :name, { prompt: "Choose a customer" },
+        class: ["form-select", { "is-invalid" => repair.errors[:customer].any? }] %>
+    <div class="invalid-feedback"><%= repair.errors[:customer].to_sentence %></div>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :mechanic_id, "Mechanic", class: "form-label" %>
+    <%= f.collection_select :mechanic_id, StaffMember.where(role: "mechanic").by_name, :id, :name,
+        { include_blank: "Not assigned yet" }, class: "form-select" %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :status, class: "form-label" %>
+    <%= f.select :status, Repair.statuses.keys.map { |status| [status.tr("_", " "), status] }, {},
+        class: "form-select" %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :promised_on, class: "form-label" %>
+    <%= f.date_field :promised_on, class: ["form-control", { "is-invalid" => repair.errors[:promised_on].any? }] %>
+    <div class="invalid-feedback"><%= repair.errors[:promised_on].to_sentence %></div>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :picked_up_at, "Picked up", class: "form-label" %>
+    <%= f.datetime_field :picked_up_at, class: ["form-control", { "is-invalid" => repair.errors[:picked_up_at].any? }] %>
+    <div class="invalid-feedback"><%= repair.errors[:picked_up_at].to_sentence %></div>
+  </div>
+
+  <h2 class="h5 mt-4">Services</h2>
+  <%= f.fields_for :repair_jobs do |rf| %>
+    <%= render "repair_job_fields", f: rf %>
+  <% end %>
+
+  <%= f.submit class: "btn btn-primary mt-3" %>
+  <%= link_to "Cancel", repair.persisted? ? repair : repairs_path, class: "btn btn-outline-secondary mt-3" %>
+<% end %>

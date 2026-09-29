@@ -1,0 +1,18 @@
+<div class="row g-2 align-items-start mb-2">
+  <%= f.hidden_field :id %>
+  <div class="col-md-6">
+    <%= f.collection_select :job_id, Job.by_name, :id, :name, { include_blank: "Choose a service" },
+        class: ["form-select", { "is-invalid" => f.object.errors[:job_id].any? }] %>
+  </div>
+  <div class="col-md-4">
+    <%= f.number_field :price_charged, step: "0.01", placeholder: "Price charged",
+        class: ["form-control", { "is-invalid" => f.object.errors[:price_charged].any? }] %>
+    <div class="invalid-feedback"><%= f.object.errors[:price_charged].to_sentence %></div>
+  </div>
+  <% if f.object.persisted? %>
+    <div class="col-md-2 form-check mt-2">
+      <%= f.check_box :_destroy, class: "form-check-input" %>
+      <%= f.label :_destroy, "Remove", class: "form-check-label" %>
+    </div>
+  <% end %>
+</div>

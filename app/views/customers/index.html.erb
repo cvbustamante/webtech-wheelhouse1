@@ -1,5 +1,7 @@
 <h1>Customers</h1>
 
+<%= link_to "New customer", new_customer_path, class: "btn btn-primary mb-3" %>
+
 <% if @customers.empty? %>
   <p class="text-muted">No customers yet.</p>
 <% else %>

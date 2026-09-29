@@ -75,25 +75,31 @@ datos_customers.each do |nombre, telefono|
   customers[nombre] = Customer.create!(name: nombre, phone: telefono)
 end
 
+# el dueno de cada bike es el customer de la repair mas antigua que le conocemos,
+# menos SA-4002 que todavia no ha entrado a reparacion y por eso necesita dueno directo
 datos_bikes = [
-  ["TM-0001", "Trek Marlin"],
-  ["TM-0002", "Trek Marlin"],
-  ["TM-0003", "Trek Marlin"],
-  ["GE-1001", "Giant Escape"],
-  ["GE-1002", "Giant Escape"],
-  ["GE-1003", "Giant Escape"],
-  ["SR-2001", "Specialized Rockhopper"],
-  ["SR-2002", "Specialized Rockhopper"],
-  ["CQ-3001", "Cannondale Quick"],
-  ["CQ-3002", "Cannondale Quick"],
-  ["SA-4001", "Scott Aspect"],
-  ["BC-5001", "Bianchi Camaleonte"],
-  ["SA-4002", "Scott Aspect"]
+  ["TM-0001", "Trek Marlin", "Javier Contreras"],
+  ["TM-0002", "Trek Marlin", "Tomás Aguilera"],
+  ["TM-0003", "Trek Marlin", "Javier Contreras"],
+  ["GE-1001", "Giant Escape", "Francisca Morales"],
+  ["GE-1002", "Giant Escape", "Antonia Reyes"],
+  ["GE-1003", "Giant Escape", "Francisca Morales"],
+  ["SR-2001", "Specialized Rockhopper", "Pedro Salinas"],
+  ["SR-2002", "Specialized Rockhopper", "Rodrigo Paredes"],
+  ["CQ-3001", "Cannondale Quick", "Camila Herrera"],
+  ["CQ-3002", "Cannondale Quick", "Valeria Campos"],
+  ["SA-4001", "Scott Aspect", "Ignacio Vera"],
+  ["BC-5001", "Bianchi Camaleonte", "Pedro Salinas"],
+  ["SA-4002", "Scott Aspect", "Martín Ibáñez"]
 ]
 
 bikes = {}
-datos_bikes.each do |serial, modelo|
-  bikes[serial] = Bike.create!(bike_model_id: bike_models[modelo].id, serial_number: serial)
+datos_bikes.each do |serial, modelo, dueno|
+  bikes[serial] = Bike.create!(
+    bike_model_id: bike_models[modelo].id,
+    customer_id: customers[dueno].id,
+    serial_number: serial
+  )
 end
 
 Repair.create!(
