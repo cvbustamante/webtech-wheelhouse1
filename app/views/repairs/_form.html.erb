@@ -42,6 +42,19 @@
     <div class="invalid-feedback"><%= repair.errors[:picked_up_at].to_sentence %></div>
   </div>
 
+  <div class="mb-3">
+    <%= f.label :diagnosis, class: "form-label" %>
+    <%= f.rich_text_area :diagnosis, class: "trix-content" %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :intake_photos, "Intake photos", class: "form-label" %>
+    <%= f.file_field :intake_photos, multiple: true, accept: "image/jpeg,image/png",
+        class: ["form-control", { "is-invalid" => repair.errors[:intake_photos].any? }] %>
+    <div class="form-text">JPEG or PNG, up to 5 MB each. New photos are added to any photos already attached.</div>
+    <div class="invalid-feedback"><%= repair.errors[:intake_photos].to_sentence %></div>
+  </div>
+
   <h2 class="h5 mt-4">Services</h2>
   <%= f.fields_for :repair_jobs do |rf| %>
     <%= render "repair_job_fields", f: rf %>

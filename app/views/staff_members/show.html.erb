@@ -20,15 +20,17 @@
   <table class="table table-sm">
     <thead>
       <tr>
+        <th>Photo</th>
         <th>Bike</th>
         <th>Customer</th>
         <th>Mechanic</th>
         <th>Status</th>
         <th>Promised</th>
+        <th>Diagnosis</th>
       </tr>
     </thead>
     <tbody>
-      <%= render @staff_member.repairs.by_promised_on %>
+      <%= render @staff_member.repairs.sort_by(&:promised_on) %>
     </tbody>
   </table>
 <% end %>

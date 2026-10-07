@@ -6,7 +6,7 @@
 
 This image is still the one generated from my Lab 3 DBML, so it is out of date (it has `photos`, `diagnosis` and `promised_date`, and no `staff_members`). The DBML below is the one that actually matches the current schema; I did not regenerate the image from it since that needs pasting the DBML into dbdiagram.io by hand.
 
-DBML (dbdiagram.io format), updated to match `db/schema.rb` exactly after Lab 8. Foreign keys are real database constraints since Lab 7.
+DBML (dbdiagram.io format), updated to match `db/schema.rb` exactly after Lab 9. Foreign keys are real database constraints since Lab 7. The Active Storage and Action Text tables are the standard ones their Rails installers generate, not something I designed by hand.
 
 ```dbml
 Table customers {
@@ -70,6 +70,43 @@ Table repair_jobs {
   updated_at datetime [not null]
 }
 
+Table active_storage_blobs {
+  id bigint [pk]
+  key varchar [not null, unique]
+  filename varchar [not null]
+  content_type varchar [null]
+  metadata text [null]
+  service_name varchar [not null]
+  byte_size bigint [not null]
+  checksum varchar [null]
+  created_at datetime [not null]
+}
+
+Table active_storage_attachments {
+  id bigint [pk]
+  name varchar [not null]
+  record_type varchar [not null]
+  record_id bigint [not null]
+  blob_id bigint [not null]
+  created_at datetime [not null]
+}
+
+Table active_storage_variant_records {
+  id bigint [pk]
+  blob_id bigint [not null]
+  variation_digest varchar [not null]
+}
+
+Table action_text_rich_texts {
+  id bigint [pk]
+  name varchar [not null]
+  body text [null]
+  record_type varchar [not null]
+  record_id bigint [not null]
+  created_at datetime [not null]
+  updated_at datetime [not null]
+}
+
 Ref: bikes.bike_model_id > bike_models.id
 Ref: bikes.customer_id > customers.id
 Ref: repairs.bike_id > bikes.id
@@ -77,6 +114,8 @@ Ref: repairs.customer_id > customers.id
 Ref: repairs.mechanic_id > staff_members.id
 Ref: repair_jobs.repair_id > repairs.id
 Ref: repair_jobs.job_id > jobs.id
+Ref: active_storage_attachments.blob_id > active_storage_blobs.id
+Ref: active_storage_variant_records.blob_id > active_storage_blobs.id
 ```
 
 ## Relationships
@@ -93,7 +132,7 @@ A repair can contain several jobs, and the same job can be used in many differen
 
 `repair_jobs` is not only a join table because it also stores `price_charged`, which is the price actually used for that job on that repair.
 
-Arrival photos and the diagnosis text are still out of the schema for now (see "Changes since Lab 3").
+A repair can have any number of intake photos, and an optional rich-text diagnosis. Neither lives in a column on `repairs` (see "Changes since Lab 3") — photos are Active Storage attachments and the diagnosis is an Action Text rich text, each pointing back at the repair through their own polymorphic `record_type`/`record_id`, not through a foreign key column I defined.
 
 ## Changes since Lab 3
 
@@ -103,13 +142,15 @@ These are the changes compared to my Lab 3 diagram, each with its reason:
 
 - **`jobs.price` and `repair_jobs.price_charged` changed from integer to decimal (precision: 8, scale: 2)**: in Lab 3 I had them as integer. Lab 5 forbids using integer or float for money, since float loses precision and a plain integer does not make it clear whether it means whole currency units or cents. A decimal with a fixed precision/scale avoids both problems.
 
-- **`diagnosis` (text) column removed from `repairs` for now**: it was in my Lab 3 diagram, but it arrives in Lab 9 along with the photos table.
+- **`diagnosis` (text) column removed from `repairs` for now**: it was in my Lab 3 diagram, but it arrives in Lab 9 as Action Text instead of a plain column.
 
-- **`photos` table not created for now**: same reason, arrives in Lab 9.
+- **`photos` table not created for now**: same reason, arrives in Lab 9 as Active Storage attachments instead of a table I designed myself.
 
 - **`staff_members` table added, with `repairs.mechanic_id` nullable**: this one is not in my Lab 3 diagram. None of my user stories asked to store staff data, mechanic and counter staff are just roles of whoever uses the system, not something I thought the database needed to keep. But this lab asks the seed to include the three mechanics and the counter person, so I needed somewhere to put them, and `mechanic_id` on `repairs` gave me a real nullable foreign key to work with (a repair that just came in does not have a mechanic assigned yet).
 
 - **`bikes.customer_id` added (Lab 8)**: in `decisions.md` I originally assumed the shop did not need to store a bike's current owner, since a repair already records who dropped the bike off. Lab 8 needs a bike to be created from its owner's page with the owner preselected, and needs deleting a customer who owns a bike to be refused, so a bike now has a required, direct owner. `repairs.customer_id` still exists separately and can name someone other than the owner, since who drops a bike off for a specific repair is not always who owns it.
+
+- **Active Storage and Action Text tables added (Lab 9)**: `repairs` still has no `photo`/`diagnosis` column, exactly like Lab 9 asks. Intake photos are attached through `active_storage_attachments`/`active_storage_blobs` (`has_many_attached :intake_photos`), and the diagnosis lives in `action_text_rich_texts` (`has_rich_text :diagnosis`). `active_storage_variant_records` just keeps track of the already-processed thumbnail/large versions of each photo so they are not reprocessed on every page view.
 
 ## Repair lifecycle
 
@@ -169,7 +210,7 @@ A repair in `dropped_off` or `diagnosed` has no rows in `repair_jobs`, since no 
 | `repair_jobs` | Stories 5, 8 and 14 — a repair contains jobs and each one has a price for that repair |
 | `staff_members` | No story from Lab 3, added later so mechanics and counter staff could be seeded |
 
-(`photos` is not in this table anymore since that table does not exist yet.)
+(`photos` was never its own table — intake photos arrived in Lab 9 as Active Storage attachments on `repairs`, not a table I designed.)
 
 ## Model decisions
 

@@ -19,11 +19,19 @@ The internal part of the system is used by the counter staff, mechanics and the 
 - Rails 8.0
 - Node 26.1.0
 - PostgreSQL, with the `postgres` role available (see `config/database.yml`)
+- libvips, for processing the intake photo thumbnails (Active Storage variants)
 
 The app expects that role's password in the `POSTGRES_PASSWORD` environment variable:
 
 ```bash
 export POSTGRES_PASSWORD=your_postgres_password
+```
+
+On Ubuntu/WSL, install libvips with:
+
+```bash
+sudo apt-get update
+sudo apt-get install libvips
 ```
 
 ## Setup

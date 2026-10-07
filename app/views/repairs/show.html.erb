@@ -23,6 +23,35 @@
   <%= button_to "Delete", @repair, method: :delete, data: { turbo_confirm: "Delete this repair?" }, class: "btn btn-outline-danger d-inline-block" %>
 </div>
 
+<h2 class="h5 mt-4">Diagnosis</h2>
+
+<% if @repair.diagnosis.present? %>
+  <div class="card-text"><%= @repair.diagnosis %></div>
+<% else %>
+  <p class="text-muted">No diagnosis yet.</p>
+<% end %>
+
+<h2 class="h5 mt-4">Intake photos</h2>
+
+<% if @repair.intake_photos.attached? %>
+  <div class="row row-cols-2 row-cols-md-4 g-3 mb-3">
+    <% @repair.intake_photos.each do |photo| %>
+      <div class="col">
+        <%= link_to url_for(photo), target: "_blank", rel: "noopener" do %>
+          <%= image_tag photo.variant(:large),
+              alt: "Intake photo of bike #{@repair.bike.serial_number} for repair ##{@repair.id}",
+              class: "img-fluid rounded" %>
+        <% end %>
+        <%= button_to "Remove photo", repair_intake_photo_path(@repair, photo),
+            method: :delete, data: { turbo_confirm: "Remove this photo?" },
+            class: "btn btn-outline-danger btn-sm mt-1 w-100" %>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <p class="text-muted">No intake photos yet.</p>
+<% end %>
+
 <h2 class="h5 mt-4">Services charged</h2>
 
 <% if @repair.repair_jobs.empty? %>

@@ -1,4 +1,6 @@
 # borro todo antes de crear de nuevo, asi correr esto dos veces no duplica nada
+# (purgo los attachments aparte porque destroy_all de Repair no borra los blobs solo)
+ActiveStorage::Attachment.find_each(&:purge)
 RepairJob.destroy_all
 Repair.destroy_all
 Bike.destroy_all
@@ -102,6 +104,15 @@ datos_bikes.each do |serial, modelo, dueno|
   )
 end
 
+# fotos de intake: reusamos las mismas 6 imagenes de ejemplo entre varias repairs
+fotos_dir = Rails.root.join("db/seeds/images")
+fotos = Dir[fotos_dir.join("*.jpg")].sort
+
+def foto(fotos, i)
+  path = fotos[i % fotos.size]
+  { io: File.open(path), filename: File.basename(path), content_type: "image/jpeg" }
+end
+
 Repair.create!(
   bike_id: bikes["TM-0001"].id,
   customer_id: customers["Javier Contreras"].id,
@@ -109,7 +120,8 @@ Repair.create!(
   status: "dropped_off",
   promised_on: 3.days.from_now.to_date,
   picked_up_at: nil,
-  created_at: 1.day.ago
+  created_at: 1.day.ago,
+  intake_photos: [foto(fotos, 0)]
 )
 
 Repair.create!(
@@ -129,7 +141,9 @@ Repair.create!(
   status: "diagnosed",
   promised_on: 2.days.from_now.to_date,
   picked_up_at: nil,
-  created_at: 2.days.ago
+  created_at: 2.days.ago,
+  intake_photos: [foto(fotos, 1)],
+  diagnosis: "<div><strong>Diagnosis:</strong> rear derailleur is misaligned and the chain skips under load.</div><ul><li>Adjust derailleur limit screws</li><li>Lubricate chain</li></ul>"
 )
 
 Repair.create!(
@@ -139,7 +153,9 @@ Repair.create!(
   status: "diagnosed",
   promised_on: 5.days.from_now.to_date,
   picked_up_at: nil,
-  created_at: 1.day.ago
+  created_at: 1.day.ago,
+  intake_photos: [foto(fotos, 2)],
+  diagnosis: "<div><strong>Diagnosis:</strong> front brake pads are worn past the wear line.</div><ul><li>Replace brake pads</li><li>Check rim for grooves</li></ul>"
 )
 
 # de aca en adelante arman las repair_jobs antes de guardar (.new + .build),
@@ -151,7 +167,9 @@ repair_5 = Repair.new(
   status: "waiting_for_approval",
   promised_on: 3.days.from_now.to_date,
   picked_up_at: nil,
-  created_at: 3.days.ago
+  created_at: 3.days.ago,
+  intake_photos: [foto(fotos, 3)],
+  diagnosis: "<div><strong>Diagnosis:</strong> bike needs a full tune-up before the season.</div><ul><li>Tune-up</li><li>Adjust brakes</li></ul>"
 )
 repair_5.repair_jobs.build(job_id: jobs["Tune-up"].id, price_charged: 35000)
 repair_5.repair_jobs.build(job_id: jobs["Brake adjustment"].id, price_charged: 10000)
@@ -164,7 +182,9 @@ repair_6 = Repair.new(
   status: "waiting_for_approval",
   promised_on: 2.days.from_now.to_date,
   picked_up_at: nil,
-  created_at: 1.day.ago
+  created_at: 1.day.ago,
+  intake_photos: [foto(fotos, 4)],
+  diagnosis: "<div><strong>Diagnosis:</strong> chain is stretched and skipping on the smallest cog.</div><ul><li>Replace chain</li></ul>"
 )
 repair_6.repair_jobs.build(job_id: jobs["Chain replacement"].id, price_charged: 9000)
 repair_6.save!
@@ -176,7 +196,9 @@ repair_7 = Repair.new(
   status: "in_progress",
   promised_on: 2.days.ago.to_date,
   picked_up_at: nil,
-  created_at: 5.days.ago
+  created_at: 5.days.ago,
+  intake_photos: [foto(fotos, 0), foto(fotos, 1), foto(fotos, 2), foto(fotos, 3)],
+  diagnosis: "<div><strong>Diagnosis:</strong> wheel is out of true and the brakes rub on one side.</div><ul><li>True the wheel</li><li>Bleed rear brake</li></ul>"
 )
 repair_7.repair_jobs.build(job_id: jobs["Wheel true"].id, price_charged: 15000)
 repair_7.repair_jobs.build(job_id: jobs["Brake bleed"].id, price_charged: 20000)
@@ -189,7 +211,9 @@ repair_8 = Repair.new(
   status: "in_progress",
   promised_on: 1.day.from_now.to_date,
   picked_up_at: nil,
-  created_at: 2.days.ago
+  created_at: 2.days.ago,
+  intake_photos: [foto(fotos, 5), foto(fotos, 0)],
+  diagnosis: "<div><strong>Diagnosis:</strong> shifting is rough and the rear tyre is nearly bald.</div><ul><li>Adjust gears</li><li>Replace rear tyre</li></ul>"
 )
 repair_8.repair_jobs.build(job_id: jobs["Gear adjustment"].id, price_charged: 10000)
 repair_8.repair_jobs.build(job_id: jobs["Tyre replacement"].id, price_charged: 12000)
@@ -202,7 +226,9 @@ repair_9 = Repair.new(
   status: "ready",
   promised_on: Date.current,
   picked_up_at: nil,
-  created_at: 4.days.ago
+  created_at: 4.days.ago,
+  intake_photos: [foto(fotos, 1)],
+  diagnosis: "<div><strong>Diagnosis:</strong> customer requested a full service before a long trip.</div><ul><li>Full bike service</li></ul>"
 )
 repair_9.repair_jobs.build(job_id: jobs["Full bike service"].id, price_charged: 45000)
 repair_9.save!
@@ -214,7 +240,9 @@ repair_10 = Repair.new(
   status: "ready",
   promised_on: 1.day.from_now.to_date,
   picked_up_at: nil,
-  created_at: 3.days.ago
+  created_at: 3.days.ago,
+  intake_photos: [foto(fotos, 2), foto(fotos, 3)],
+  diagnosis: "<div><strong>Diagnosis:</strong> general inspection requested, flat front tyre on arrival.</div><ul><li>Bike inspection</li><li>Replace inner tube</li><li>Replace pedals</li></ul>"
 )
 repair_10.repair_jobs.build(job_id: jobs["Bike inspection"].id, price_charged: 15000)
 repair_10.repair_jobs.build(job_id: jobs["Tube replacement"].id, price_charged: 8000)
@@ -228,7 +256,9 @@ repair_11 = Repair.new(
   status: "picked_up",
   promised_on: 5.days.ago.to_date,
   picked_up_at: 4.days.ago,
-  created_at: 6.days.ago
+  created_at: 6.days.ago,
+  intake_photos: [foto(fotos, 4)],
+  diagnosis: "<div><strong>Diagnosis:</strong> annual tune-up, handlebar was loose.</div><ul><li>Tune-up</li><li>Tighten handlebar</li></ul>"
 )
 repair_11.repair_jobs.build(job_id: jobs["Tune-up"].id, price_charged: 35000)
 repair_11.repair_jobs.build(job_id: jobs["Handlebar adjustment"].id, price_charged: 8000)
@@ -241,7 +271,8 @@ repair_12 = Repair.new(
   status: "picked_up",
   promised_on: Date.current,
   picked_up_at: Time.current.change(hour: 16),
-  created_at: Time.current.change(hour: 9)
+  created_at: Time.current.change(hour: 9),
+  diagnosis: "<div><strong>Diagnosis:</strong> flat tyre from a puncture on the front wheel.</div><ul><li>Patch and reinflate</li></ul>"
 )
 repair_12.repair_jobs.build(job_id: jobs["Flat tyre repair"].id, price_charged: 8000)
 repair_12.save!
@@ -253,7 +284,9 @@ repair_13 = Repair.new(
   status: "declined",
   promised_on: 1.day.ago.to_date,
   picked_up_at: nil,
-  created_at: 1.day.ago
+  created_at: 1.day.ago,
+  intake_photos: [foto(fotos, 5)],
+  diagnosis: "<div><strong>Diagnosis:</strong> rear suspension feels soft and leaks a little oil.</div><ul><li>Suspension service</li></ul><p>Customer declined given the price.</p>"
 )
 repair_13.repair_jobs.build(job_id: jobs["Suspension service"].id, price_charged: 60000)
 repair_13.save!
@@ -265,7 +298,9 @@ repair_14 = Repair.new(
   status: "picked_up",
   promised_on: 10.months.ago.to_date + 5.days,
   picked_up_at: 10.months.ago + 6.days,
-  created_at: 10.months.ago
+  created_at: 10.months.ago,
+  intake_photos: [foto(fotos, 0)],
+  diagnosis: "<div><strong>Diagnosis:</strong> routine tune-up with a worn cassette.</div><ul><li>Tune-up</li><li>Replace cassette</li></ul>"
 )
 repair_14.repair_jobs.build(job_id: jobs["Tune-up"].id, price_charged: 30000)
 repair_14.repair_jobs.build(job_id: jobs["Cassette replacement"].id, price_charged: 20000)
@@ -278,5 +313,15 @@ Repair.create!(
   status: "dropped_off",
   promised_on: 6.days.from_now.to_date,
   picked_up_at: nil,
-  created_at: Time.current
+  created_at: Time.current,
+  intake_photos: [foto(fotos, 1)]
 )
+
+# genera las variantes ahora para que la primera vez que alguien abra el sitio
+# las miniaturas y las fotos grandes ya esten listas y no haya que procesarlas al vuelo
+Repair.find_each do |repair|
+  repair.intake_photos.each do |photo|
+    photo.variant(:thumb).processed
+    photo.variant(:large).processed
+  end
+end

@@ -1,7 +1,19 @@
 <tr class="<%= "table-danger" if repair.overdue? %>">
+  <td>
+    <% if repair.intake_photos.attached? %>
+      <%= image_tag repair.intake_photos.first.variant(:thumb),
+          alt: "Intake photo of bike #{repair.bike.serial_number} for repair ##{repair.id}",
+          class: "rounded", width: 60, height: 60, style: "object-fit: cover" %>
+    <% else %>
+      <div class="bg-body-secondary rounded" style="width: 60px; height: 60px"></div>
+    <% end %>
+  </td>
   <td><%= link_to repair.bike.serial_number, repair.bike %></td>
   <td><%= link_to repair.customer.name, repair.customer %></td>
   <td><%= repair.mechanic ? repair.mechanic.name : "Not assigned" %></td>
   <td><%= link_to repair.status.tr("_", " "), repair, class: "badge text-bg-secondary text-decoration-none" %></td>
   <td><%= l(repair.promised_on, format: :long) %></td>
+  <td class="text-muted small">
+    <%= repair.diagnosis.present? ? repair.diagnosis.to_plain_text.truncate(80) : "No diagnosis yet" %>
+  </td>
 </tr>

@@ -2,7 +2,8 @@ class RepairsController < ApplicationController
   before_action :set_repair, only: [:show, :edit, :update, :destroy]
 
   def index
-    @repairs = Repair.includes(:bike, :customer, :mechanic).by_promised_on
+    @repairs = Repair.includes(:bike, :customer, :mechanic, :rich_text_diagnosis,
+      intake_photos_attachments: { blob: :variant_records }).by_promised_on
   end
 
   def show
@@ -14,7 +15,8 @@ class RepairsController < ApplicationController
   end
 
   def create
-    @repair = Repair.new(repair_params)
+    @repair = Repair.new(repair_params.except(:intake_photos))
+    @repair.intake_photos = new_intake_photos if new_intake_photos.any?
     if @repair.save
       redirect_to @repair, notice: "Repair for #{@repair.bike.serial_number} was created."
     else
@@ -28,7 +30,11 @@ class RepairsController < ApplicationController
   end
 
   def update
-    if @repair.update(repair_params)
+    @repair.assign_attributes(repair_params.except(:intake_photos))
+    if new_intake_photos.any?
+      @repair.intake_photos = @repair.intake_photos.map(&:blob) + new_intake_photos
+    end
+    if @repair.save
       redirect_to @repair, notice: "Repair for #{@repair.bike.serial_number} was updated."
     else
       add_blank_lines
@@ -47,7 +53,8 @@ class RepairsController < ApplicationController
   private
 
   def set_repair
-    @repair = Repair.includes(:bike, :customer, :mechanic, repair_jobs: :job).find(params[:id])
+    @repair = Repair.includes(:bike, :customer, :mechanic, :rich_text_diagnosis,
+      repair_jobs: :job, intake_photos_attachments: { blob: :variant_records }).find(params[:id])
   end
 
   # una repair puede tener hasta 4 repair_jobs, asi que siempre ofrecemos
@@ -58,8 +65,13 @@ class RepairsController < ApplicationController
 
   def repair_params
     params.expect(repair: [
-      :bike_id, :customer_id, :mechanic_id, :status, :promised_on, :picked_up_at,
+      :bike_id, :customer_id, :mechanic_id, :status, :promised_on, :picked_up_at, :diagnosis,
+      intake_photos: [],
       repair_jobs_attributes: [[:id, :job_id, :price_charged, :_destroy]]
     ])
+  end
+
+  def new_intake_photos
+    Array(repair_params[:intake_photos]).reject(&:blank?)
   end
 end
