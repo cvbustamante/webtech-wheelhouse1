@@ -52,6 +52,16 @@ class Repair < ApplicationRecord
     repair_jobs.sum(:price_charged)
   end
 
+  # lo que contesto el customer a la cotizacion, sacado del status actual.
+  # hasta waiting_for_approval todavia no contesta, asi que es nil
+  def customer_answer
+    if declined?
+      Repair.statuses[:declined]
+    elsif in_progress? || ready? || picked_up?
+      Repair.statuses[:in_progress]
+    end
+  end
+
   private
 
   def dates_are_not_before_drop_off

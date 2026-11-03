@@ -13,4 +13,14 @@ Rails.application.routes.draw do
 
   get "visiting", to: "pages#visiting", as: :visiting
   get "about", to: "pages#about", as: :about
+
+  namespace :api do
+    namespace :v1 do
+      resources :services, only: [:index, :show, :create]
+      resources :repairs, only: [:index, :show]
+    end
+
+    # cualquier otra cosa bajo /api/v1 responde el 404 en json, no la pagina html de rails
+    match "v1/*path", to: "base#route_not_found", via: :all
+  end
 end
