@@ -1,0 +1,11 @@
+<p>Hi from Wheelhouse,</p>
+
+<p>
+  Someone asked to reset the password of the Wheelhouse account <%= @user.email_address %>.
+  You can reset it within the next 15 minutes on
+  <%= link_to "this password reset page", edit_password_url(@user.password_reset_token) %>.
+</p>
+
+<p>If it wasn't you, you can ignore this email and your password stays the same.</p>
+
+<p>- Wheelhouse</p>

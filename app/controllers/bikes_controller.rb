@@ -44,7 +44,8 @@ class BikesController < ApplicationController
 
   def set_bike
     @bike = Bike.includes(:bike_model, :customer, repairs: [
-      :customer, :mechanic, :rich_text_diagnosis, intake_photos_attachments: { blob: :variant_records }
+      :customer, :mechanic, :rich_text_diagnosis, { taken_in_by: :staff_member },
+      intake_photos_attachments: { blob: :variant_records }
     ]).find(params[:id])
   end
 

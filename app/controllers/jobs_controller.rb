@@ -1,4 +1,6 @@
 class JobsController < ApplicationController
+  # la lista de precios es lo unico publico; crear, editar y borrar piden sesion
+  allow_unauthenticated_access only: [:index, :show]
   before_action :set_job, only: [:show, :edit, :update, :destroy]
 
   def index

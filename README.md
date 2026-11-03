@@ -105,3 +105,28 @@ bin/dev
 If `db:prepare` fails on the very first run with a connection error, run `bin/rails db:create` and then `bin/rails db:prepare` again.
 
 `db/seeds.rb` wipes the tables before inserting, so running `bin/rails db:seed` again does not duplicate rows.
+
+## Accounts
+
+Every page asks you to sign in, except the price list (`/services` and each service's page), signing in, signing up and the forgotten password pages. The sign-in page links to a sign-up page, which creates an account with the default role (`mechanic`, not joined to anyone). Roles and the member of the staff of an account are changed only from the seed or the console.
+
+The seed creates these accounts. They exist **only in development**, from `db/seeds.rb`:
+
+| Email | Password | Role | Member of the staff |
+|---|---|---|---|
+| `carolina@wheelhouse.cl` | `carolina-owner-2026` | owner | Carolina Díaz |
+| `valentina@wheelhouse.cl` | `valentina-counter-2026` | counter | Valentina Muñoz |
+| `diego@wheelhouse.cl` | `diego-mechanic-2026` | mechanic | Diego Fuentes |
+| `camila@wheelhouse.cl` | `camila-mechanic-2026` | mechanic | Camila Rojas |
+| `matias@wheelhouse.cl` | `matias-mechanic-2026` | mechanic | Matías Soto |
+| `nuevo@wheelhouse.cl` | `nuevo-sin-staff-2026` | mechanic (the default) | none |
+
+Running `bin/rails db:seed` again resets these passwords.
+
+## Emails in development
+
+No email leaves your machine: there is no SMTP server or mail provider. Every email the app sends (the welcome email after signing up, and the forgotten password email) is written to a file in `tmp/mails/`, one file per recipient, named after the email address (for example `tmp/mails/camila@wheelhouse.cl`). Open it with any text editor; the link in it opens the app at `http://localhost:3000`.
+
+Emails go out from a job after the response, so the file shows up a moment after the page answers.
+
+To see what each email looks like, the previews are at `http://localhost:3000/rails/mailers`.

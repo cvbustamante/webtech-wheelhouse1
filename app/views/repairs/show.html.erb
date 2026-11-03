@@ -5,6 +5,7 @@
     <h1 class="card-title h4">Repair for <%= link_to @repair.bike.serial_number, @repair.bike %></h1>
     <p class="card-text">Customer: <%= link_to @repair.customer.name, @repair.customer %></p>
     <p class="card-text">Mechanic: <%= @repair.mechanic ? @repair.mechanic.name : "Not assigned yet" %></p>
+    <p class="card-text">Taken in by: <%= @repair.taken_in_by ? @repair.taken_in_by.display_name : "Not recorded" %></p>
     <p class="card-text">Status: <span class="badge text-bg-secondary"><%= @repair.status.tr("_", " ") %></span></p>
     <p class="card-text">Promised: <%= l(@repair.promised_on, format: :long) %></p>
     <p class="card-text">

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_10_05_160555) do
+ActiveRecord::Schema[8.0].define(version: 2026_11_03_172559) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -103,9 +103,20 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_05_160555) do
     t.datetime "picked_up_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "taken_in_by_id"
     t.index ["bike_id"], name: "index_repairs_on_bike_id"
     t.index ["customer_id"], name: "index_repairs_on_customer_id"
     t.index ["mechanic_id"], name: "index_repairs_on_mechanic_id"
+    t.index ["taken_in_by_id"], name: "index_repairs_on_taken_in_by_id"
+  end
+
+  create_table "sessions", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "ip_address"
+    t.string "user_agent"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_sessions_on_user_id"
   end
 
   create_table "staff_members", force: :cascade do |t|
@@ -113,6 +124,17 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_05_160555) do
     t.string "role", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string "email_address", null: false
+    t.string "password_digest", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "role", default: "mechanic", null: false
+    t.bigint "staff_member_id"
+    t.index ["email_address"], name: "index_users_on_email_address", unique: true
+    t.index ["staff_member_id"], name: "index_users_on_staff_member_id", unique: true
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
@@ -124,4 +146,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_05_160555) do
   add_foreign_key "repairs", "bikes"
   add_foreign_key "repairs", "customers"
   add_foreign_key "repairs", "staff_members", column: "mechanic_id"
+  add_foreign_key "repairs", "users", column: "taken_in_by_id"
+  add_foreign_key "sessions", "users"
+  add_foreign_key "users", "staff_members"
 end

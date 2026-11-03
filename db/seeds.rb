@@ -4,6 +4,8 @@ ActiveStorage::Attachment.find_each(&:purge)
 RepairJob.destroy_all
 Repair.destroy_all
 Bike.destroy_all
+# las cuentas van antes que el staff, si no el staff con cuenta no se deja borrar
+User.destroy_all
 StaffMember.destroy_all
 Job.destroy_all
 BikeModel.destroy_all
@@ -42,7 +44,17 @@ end
 mecanico_diego = StaffMember.create!(name: "Diego Fuentes", role: "mechanic")
 mecanico_camila = StaffMember.create!(name: "Camila Rojas", role: "mechanic")
 mecanico_matias = StaffMember.create!(name: "Matías Soto", role: "mechanic")
-StaffMember.create!(name: "Valentina Muñoz", role: "counter")
+counter_valentina = StaffMember.create!(name: "Valentina Muñoz", role: "counter")
+duena_carolina = StaffMember.create!(name: "Carolina Díaz", role: "owner")
+
+# una cuenta por cada staff, cada una con su propia password (solo existen en development).
+# la ultima no tiene staff y queda con el rol por defecto
+cuenta_carolina = User.create!(email_address: "carolina@wheelhouse.cl", password: "carolina-owner-2026", role: :owner, staff_member: duena_carolina)
+cuenta_valentina = User.create!(email_address: "valentina@wheelhouse.cl", password: "valentina-counter-2026", role: :counter, staff_member: counter_valentina)
+User.create!(email_address: "diego@wheelhouse.cl", password: "diego-mechanic-2026", role: :mechanic, staff_member: mecanico_diego)
+User.create!(email_address: "camila@wheelhouse.cl", password: "camila-mechanic-2026", role: :mechanic, staff_member: mecanico_camila)
+User.create!(email_address: "matias@wheelhouse.cl", password: "matias-mechanic-2026", role: :mechanic, staff_member: mecanico_matias)
+User.create!(email_address: "nuevo@wheelhouse.cl", password: "nuevo-sin-staff-2026")
 
 nombres_de_modelo = [
   "Trek Marlin",
@@ -316,6 +328,14 @@ Repair.create!(
   created_at: Time.current,
   intake_photos: [foto(fotos, 1)]
 )
+
+# quien recibio cada repair: casi todas la counter y algunas la owner.
+# la primera y la de hace 10 meses quedan sin registrar, como las repairs de antes del lab 11
+sin_registro = [Repair.order(:id).first, repair_14]
+Repair.order(:id).each_with_index do |repair, i|
+  next if sin_registro.include?(repair)
+  repair.update!(taken_in_by: i % 3 == 0 ? cuenta_carolina : cuenta_valentina)
+end
 
 # genera las variantes ahora para que la primera vez que alguien abra el sitio
 # las miniaturas y las fotos grandes ya esten listas y no haya que procesarlas al vuelo

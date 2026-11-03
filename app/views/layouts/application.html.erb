@@ -26,23 +26,42 @@
   <body>
   <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container">
-      <%= link_to "Wheelhouse", root_path, class: "navbar-brand" %>
+      <%# un visitante solo puede ver los services, asi que el logo lo lleva ahi %>
+      <%= link_to "Wheelhouse", authenticated? ? root_path : jobs_path, class: "navbar-brand" %>
 
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar">
         <span class="navbar-toggler-icon"></span>
       </button>
 
       <div class="collapse navbar-collapse" id="navbar">
-        <div class="navbar-nav">
-          <%= link_to "Home", root_path, class: "nav-link #{'active' if current_page?(root_path)}" %>
-          <%= link_to "Customers", customers_path, class: "nav-link #{'active' if current_page?(customers_path)}" %>
-          <%= link_to "Bikes", bikes_path, class: "nav-link #{'active' if current_page?(bikes_path)}" %>
-          <%= link_to "Repairs", repairs_path, class: "nav-link #{'active' if current_page?(repairs_path)}" %>
-          <%= link_to "Services", jobs_path, class: "nav-link #{'active' if current_page?(jobs_path)}" %>
-          <%= link_to "Staff", staff_members_path, class: "nav-link #{'active' if current_page?(staff_members_path)}" %>
-          <%= link_to "Visiting", visiting_path, class: "nav-link #{'active' if current_page?(visiting_path)}" %>
-          <%= link_to "About", about_path, class: "nav-link #{'active' if current_page?(about_path)}" %>
-        </div>
+        <% if authenticated? %>
+          <div class="navbar-nav">
+            <%= link_to "Home", root_path, class: "nav-link #{'active' if current_page?(root_path)}" %>
+            <%= link_to "Customers", customers_path, class: "nav-link #{'active' if current_page?(customers_path)}" %>
+            <%= link_to "Bikes", bikes_path, class: "nav-link #{'active' if current_page?(bikes_path)}" %>
+            <%= link_to "Repairs", repairs_path, class: "nav-link #{'active' if current_page?(repairs_path)}" %>
+            <%= link_to "Services", jobs_path, class: "nav-link #{'active' if current_page?(jobs_path)}" %>
+            <%= link_to "Staff", staff_members_path, class: "nav-link #{'active' if current_page?(staff_members_path)}" %>
+            <%= link_to "Visiting", visiting_path, class: "nav-link #{'active' if current_page?(visiting_path)}" %>
+            <%= link_to "About", about_path, class: "nav-link #{'active' if current_page?(about_path)}" %>
+          </div>
+
+          <div class="navbar-nav ms-auto align-items-lg-center gap-2">
+            <span class="navbar-text">
+              <%= Current.user.display_name %>
+              <span class="badge text-bg-secondary"><%= Current.user.role.humanize %></span>
+            </span>
+            <%= button_to "Sign out", session_path, method: :delete, class: "btn btn-outline-secondary btn-sm" %>
+          </div>
+        <% else %>
+          <div class="navbar-nav">
+            <%= link_to "Services", jobs_path, class: "nav-link #{'active' if current_page?(jobs_path)}" %>
+          </div>
+
+          <div class="navbar-nav ms-auto">
+            <%= link_to "Sign in", new_session_path, class: "nav-link #{'active' if current_page?(new_session_path)}" %>
+          </div>
+        <% end %>
       </div>
     </div>
   </nav>

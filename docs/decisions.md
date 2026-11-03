@@ -1,6 +1,6 @@
 # Decisions
 
-These are three questions I would ask the owner because the description does not answer them and the answer would change the model.
+These are questions I would ask the owner because the description does not answer them and the answer would change the model.
 
 ## 1. Do quick repairs also need customer approval?
 
@@ -25,3 +25,11 @@ The owner says that sometimes the shop charges less than the price list because 
 **Assumption I made:** a mechanic can change `price_charged` for a job on a specific repair without a separate approval being recorded.
 
 **If the answer were that the shop owner has to approve discounts:** `repair_jobs` would need an `approved_by_id` to record who authorized the lower price.
+
+## 4. Which role does a new account get by default? (Lab 11)
+
+Every account has a role (`owner`, `mechanic` or `counter`), and the sign-up page does not let anyone choose it, so a new account needs a default. The default should be the role that can do the least, so that an account nobody has reviewed yet cannot see or change more than it should.
+
+**Assumption I made:** the default is `mechanic`. The owner runs everything, including the price list and the staff. The counter takes bikes in, so it reads every repair and talks to every customer. A mechanic only works on the repairs assigned to them, and they are assigned through the member of the staff joined to the account. A new account is not joined to anyone, so as a mechanic it has no repairs of its own and reads none, which is less than the counter can see.
+
+**If the answer were that the counter should be the default:** a stranger who signs up would read every repair and every customer's name from the start, which is exactly what the owner asked to keep closed.

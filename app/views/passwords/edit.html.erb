@@ -1,0 +1,24 @@
+<% content_for :title, "Update your password" %>
+
+<h1>Update your password</h1>
+
+<%= form_with url: password_path(params[:token]), method: :put, class: "col-md-6 col-lg-4" do |form| %>
+  <% if @user.errors.any? %>
+    <div class="alert alert-danger"><%= @user.errors.full_messages.to_sentence %></div>
+  <% end %>
+
+  <div class="mb-3">
+    <%= form.label :password, "New password", class: "form-label" %>
+    <%= form.password_field :password, required: true, autocomplete: "new-password", maxlength: 72, class: ["form-control", { "is-invalid" => @user.errors[:password].any? }] %>
+    <div class="invalid-feedback"><%= @user.errors[:password].to_sentence %></div>
+    <div class="form-text">At least <%= User::MIN_PASSWORD_LENGTH %> characters.</div>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :password_confirmation, "Repeat new password", class: "form-label" %>
+    <%= form.password_field :password_confirmation, required: true, autocomplete: "new-password", maxlength: 72, class: ["form-control", { "is-invalid" => @user.errors[:password_confirmation].any? }] %>
+    <div class="invalid-feedback"><%= @user.errors[:password_confirmation].to_sentence %></div>
+  </div>
+
+  <%= form.submit "Save", class: "btn btn-primary" %>
+<% end %>

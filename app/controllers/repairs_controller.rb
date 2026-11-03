@@ -2,7 +2,7 @@ class RepairsController < ApplicationController
   before_action :set_repair, only: [:show, :edit, :update, :destroy]
 
   def index
-    @repairs = Repair.includes(:bike, :customer, :mechanic, :rich_text_diagnosis,
+    @repairs = Repair.includes(:bike, :customer, :mechanic, :rich_text_diagnosis, { taken_in_by: :staff_member },
       intake_photos_attachments: { blob: :variant_records }).by_promised_on
   end
 
@@ -16,6 +16,8 @@ class RepairsController < ApplicationController
 
   def create
     @repair = Repair.new(repair_params.except(:intake_photos))
+    # quien la recibio sale de la sesion, nunca del form
+    @repair.taken_in_by = Current.user
     @repair.intake_photos = new_intake_photos if new_intake_photos.any?
     if @repair.save
       redirect_to @repair, notice: "Repair for #{@repair.bike.serial_number} was created."
@@ -53,7 +55,7 @@ class RepairsController < ApplicationController
   private
 
   def set_repair
-    @repair = Repair.includes(:bike, :customer, :mechanic, :rich_text_diagnosis,
+    @repair = Repair.includes(:bike, :customer, :mechanic, :rich_text_diagnosis, { taken_in_by: :staff_member },
       repair_jobs: :job, intake_photos_attachments: { blob: :variant_records }).find(params[:id])
   end
 

@@ -2,6 +2,8 @@ class Repair < ApplicationRecord
   belongs_to :bike
   belongs_to :customer
   belongs_to :mechanic, class_name: "StaffMember", optional: true
+  # optional porque las repairs de antes del lab 11 no tienen quien las recibio
+  belongs_to :taken_in_by, class_name: "User", optional: true
   has_many :repair_jobs, -> { order(:id) }, dependent: :destroy
   has_many :jobs, through: :repair_jobs
 

@@ -44,7 +44,8 @@ class StaffMembersController < ApplicationController
 
   def set_staff_member
     @staff_member = StaffMember.includes(repairs: [
-      :bike, :customer, :mechanic, :rich_text_diagnosis, intake_photos_attachments: { blob: :variant_records }
+      :bike, :customer, :mechanic, :rich_text_diagnosis, { taken_in_by: :staff_member },
+      intake_photos_attachments: { blob: :variant_records }
     ]).find(params[:id])
   end
 
