@@ -2,18 +2,26 @@ class BikesController < ApplicationController
   before_action :set_bike, only: [:show, :edit, :update, :destroy]
 
   def index
-    @bikes = Bike.includes(:bike_model).by_serial_number
+    authorize Bike
+    @bikes = policy_scope(Bike).includes(:bike_model).by_serial_number
   end
 
   def show
+    authorize @bike
+    @repairs = policy_scope(Repair).where(bike: @bike)
+      .includes(:bike, :customer, :mechanic, :rich_text_diagnosis, { taken_in_by: :staff_member },
+        intake_photos_attachments: { blob: :variant_records })
+      .by_promised_on.load
   end
 
   def new
     @bike = Bike.new(customer_id: params[:customer_id])
+    authorize @bike
   end
 
   def create
     @bike = Bike.new(bike_params)
+    authorize @bike
     if @bike.save
       redirect_to @bike, notice: "#{@bike.serial_number} was created."
     else
@@ -22,9 +30,11 @@ class BikesController < ApplicationController
   end
 
   def edit
+    authorize @bike
   end
 
   def update
+    authorize @bike
     if @bike.update(bike_params)
       redirect_to @bike, notice: "#{@bike.serial_number} was updated."
     else
@@ -33,6 +43,7 @@ class BikesController < ApplicationController
   end
 
   def destroy
+    authorize @bike
     if @bike.destroy
       redirect_to bikes_path, status: :see_other, notice: "#{@bike.serial_number} was deleted."
     else
@@ -43,10 +54,7 @@ class BikesController < ApplicationController
   private
 
   def set_bike
-    @bike = Bike.includes(:bike_model, :customer, repairs: [
-      :customer, :mechanic, :rich_text_diagnosis, { taken_in_by: :staff_member },
-      intake_photos_attachments: { blob: :variant_records }
-    ]).find(params[:id])
+    @bike = Bike.includes(:bike_model, :customer).find(params[:id])
   end
 
   def bike_params

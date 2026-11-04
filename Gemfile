@@ -43,6 +43,8 @@ gem "thruster", require: false
 gem "image_processing", "~> 1.2"
 # Allow the personal page (a different origin) to read the API [https://github.com/cyu/rack-cors]
 gem "rack-cors"
+# Who may do what, one policy per model [https://github.com/varvet/pundit]
+gem "pundit", "~> 2.5"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

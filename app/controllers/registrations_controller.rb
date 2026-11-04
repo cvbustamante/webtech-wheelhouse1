@@ -1,5 +1,7 @@
 class RegistrationsController < ApplicationController
   allow_unauthenticated_access only: [:new, :create]
+  # crear cuenta no tiene policy, ver docs/decisions.md
+  skip_after_action :verify_authorized
 
   def new
     @user = User.new

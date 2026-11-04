@@ -1,6 +1,8 @@
 <h1>Repairs</h1>
 
-<%= link_to "New repair", new_repair_path, class: "btn btn-primary mb-3" %>
+<% if policy(Repair).new? %>
+  <%= link_to "New repair", new_repair_path, class: "btn btn-primary mb-3" %>
+<% end %>
 
 <% if @repairs.empty? %>
   <p class="text-muted">No repairs yet.</p>

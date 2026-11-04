@@ -37,11 +37,20 @@
         <% if authenticated? %>
           <div class="navbar-nav">
             <%= link_to "Home", root_path, class: "nav-link #{'active' if current_page?(root_path)}" %>
-            <%= link_to "Customers", customers_path, class: "nav-link #{'active' if current_page?(customers_path)}" %>
-            <%= link_to "Bikes", bikes_path, class: "nav-link #{'active' if current_page?(bikes_path)}" %>
-            <%= link_to "Repairs", repairs_path, class: "nav-link #{'active' if current_page?(repairs_path)}" %>
+            <%# cada link sale solo si la policy deja abrir ese index %>
+            <% if policy(Customer).index? %>
+              <%= link_to "Customers", customers_path, class: "nav-link #{'active' if current_page?(customers_path)}" %>
+            <% end %>
+            <% if policy(Bike).index? %>
+              <%= link_to "Bikes", bikes_path, class: "nav-link #{'active' if current_page?(bikes_path)}" %>
+            <% end %>
+            <% if policy(Repair).index? %>
+              <%= link_to "Repairs", repairs_path, class: "nav-link #{'active' if current_page?(repairs_path)}" %>
+            <% end %>
             <%= link_to "Services", jobs_path, class: "nav-link #{'active' if current_page?(jobs_path)}" %>
-            <%= link_to "Staff", staff_members_path, class: "nav-link #{'active' if current_page?(staff_members_path)}" %>
+            <% if policy(StaffMember).index? %>
+              <%= link_to "Staff", staff_members_path, class: "nav-link #{'active' if current_page?(staff_members_path)}" %>
+            <% end %>
             <%= link_to "Visiting", visiting_path, class: "nav-link #{'active' if current_page?(visiting_path)}" %>
             <%= link_to "About", about_path, class: "nav-link #{'active' if current_page?(about_path)}" %>
           </div>

@@ -318,6 +318,21 @@ repair_14.repair_jobs.build(job_id: jobs["Tune-up"].id, price_charged: 30000)
 repair_14.repair_jobs.build(job_id: jobs["Cassette replacement"].id, price_charged: 20000)
 repair_14.save!
 
+# camila tambien necesita una entregada, asi cada mecanico tiene repairs entregadas y abiertas
+repair_camila = Repair.new(
+  bike_id: bikes["CQ-3002"].id,
+  customer_id: customers["Valeria Campos"].id,
+  mechanic_id: mecanico_camila.id,
+  status: "picked_up",
+  promised_on: 2.months.ago.to_date + 3.days,
+  picked_up_at: 2.months.ago + 3.days,
+  created_at: 2.months.ago,
+  diagnosis: "<div><strong>Diagnosis:</strong> brake pads worn and a slow leak in the rear tube.</div><ul><li>Replace disc brake pads</li><li>Replace inner tube</li></ul>"
+)
+repair_camila.repair_jobs.build(job_id: jobs["Disc brake pad replacement"].id, price_charged: 18000)
+repair_camila.repair_jobs.build(job_id: jobs["Tube replacement"].id, price_charged: 8000)
+repair_camila.save!
+
 Repair.create!(
   bike_id: bikes["CQ-3001"].id,
   customer_id: customers["Sofía Bravo"].id,

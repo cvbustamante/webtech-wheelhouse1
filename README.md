@@ -13,6 +13,7 @@ The internal part of the system is used by the counter staff, mechanics and the 
 - [Decisions](docs/decisions.md)
 - [Wireframes](docs/wireframes.md)
 - [API](docs/api.md)
+- [Permissions](docs/permissions.md)
 
 ## The API
 
@@ -112,14 +113,16 @@ Every page asks you to sign in, except the price list (`/services` and each serv
 
 The seed creates these accounts. They exist **only in development**, from `db/seeds.rb`:
 
-| Email | Password | Role | Member of the staff |
-|---|---|---|---|
-| `carolina@wheelhouse.cl` | `carolina-owner-2026` | owner | Carolina Díaz |
-| `valentina@wheelhouse.cl` | `valentina-counter-2026` | counter | Valentina Muñoz |
-| `diego@wheelhouse.cl` | `diego-mechanic-2026` | mechanic | Diego Fuentes |
-| `camila@wheelhouse.cl` | `camila-mechanic-2026` | mechanic | Camila Rojas |
-| `matias@wheelhouse.cl` | `matias-mechanic-2026` | mechanic | Matías Soto |
-| `nuevo@wheelhouse.cl` | `nuevo-sin-staff-2026` | mechanic (the default) | none |
+| Email | Password | Role | Member of the staff | What it can do |
+|---|---|---|---|---|
+| `carolina@wheelhouse.cl` | `carolina-owner-2026` | owner | Carolina Díaz | Everything: services, staff, customers, bikes, and every repair (including handed-back ones and deleting). |
+| `valentina@wheelhouse.cl` | `valentina-counter-2026` | counter | Valentina Muñoz | Takes repairs in, reads every repair and edits the ones not handed back; creates and edits customers and bikes; reads services and staff. |
+| `diego@wheelhouse.cl` | `diego-mechanic-2026` | mechanic | Diego Fuentes | Reads and edits only their own repairs while they are not handed back (state, diagnosis, photos); reads services and staff. |
+| `camila@wheelhouse.cl` | `camila-mechanic-2026` | mechanic | Camila Rojas | Reads and edits only their own repairs while they are not handed back (state, diagnosis, photos); reads services and staff. |
+| `matias@wheelhouse.cl` | `matias-mechanic-2026` | mechanic | Matías Soto | Reads and edits only their own repairs while they are not handed back (state, diagnosis, photos); reads services and staff. |
+| `nuevo@wheelhouse.cl` | `nuevo-sin-staff-2026` | mechanic (the default) | none | Same as a mechanic, but with no member of the staff it has no repairs: reads services and staff only. |
+
+The full rules, action by action, are in [docs/permissions.md](docs/permissions.md). Anything an account may not do answers a "not allowed" page (403).
 
 Running `bin/rails db:seed` again resets these passwords.
 

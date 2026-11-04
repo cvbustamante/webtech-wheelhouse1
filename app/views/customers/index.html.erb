@@ -1,6 +1,8 @@
 <h1>Customers</h1>
 
-<%= link_to "New customer", new_customer_path, class: "btn btn-primary mb-3" %>
+<% if policy(Customer).new? %>
+  <%= link_to "New customer", new_customer_path, class: "btn btn-primary mb-3" %>
+<% end %>
 
 <% if @customers.empty? %>
   <p class="text-muted">No customers yet.</p>

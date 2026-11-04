@@ -1,63 +1,83 @@
+<%# cada rol ve solo los campos que su policy le deja cambiar %>
+<% writes = policy(repair) %>
 <%= form_with model: repair do |f| %>
   <% if repair.errors.any? %>
     <div class="alert alert-danger"><%= repair.errors.full_messages.to_sentence %></div>
   <% end %>
 
-  <div class="mb-3">
-    <%= f.label :bike_id, "Bike", class: "form-label" %>
-    <%= f.collection_select :bike_id, Bike.includes(:bike_model).by_serial_number, :id,
-        ->(bike) { "#{bike.serial_number} (#{bike.bike_model.name})" }, { prompt: "Choose a bike" },
-        class: ["form-select", { "is-invalid" => repair.errors[:bike].any? }] %>
-    <div class="invalid-feedback"><%= repair.errors[:bike].to_sentence %></div>
-  </div>
+  <% if writes.permitted_attribute?(:bike_id) %>
+    <div class="mb-3">
+      <%= f.label :bike_id, "Bike", class: "form-label" %>
+      <%= f.collection_select :bike_id, Bike.includes(:bike_model).by_serial_number, :id,
+          ->(bike) { "#{bike.serial_number} (#{bike.bike_model.name})" }, { prompt: "Choose a bike" },
+          class: ["form-select", { "is-invalid" => repair.errors[:bike].any? }] %>
+      <div class="invalid-feedback"><%= repair.errors[:bike].to_sentence %></div>
+    </div>
+  <% end %>
 
-  <div class="mb-3">
-    <%= f.label :customer_id, "Customer", class: "form-label" %>
-    <%= f.collection_select :customer_id, Customer.by_name, :id, :name, { prompt: "Choose a customer" },
-        class: ["form-select", { "is-invalid" => repair.errors[:customer].any? }] %>
-    <div class="invalid-feedback"><%= repair.errors[:customer].to_sentence %></div>
-  </div>
+  <% if writes.permitted_attribute?(:customer_id) %>
+    <div class="mb-3">
+      <%= f.label :customer_id, "Customer", class: "form-label" %>
+      <%= f.collection_select :customer_id, Customer.by_name, :id, :name, { prompt: "Choose a customer" },
+          class: ["form-select", { "is-invalid" => repair.errors[:customer].any? }] %>
+      <div class="invalid-feedback"><%= repair.errors[:customer].to_sentence %></div>
+    </div>
+  <% end %>
 
-  <div class="mb-3">
-    <%= f.label :mechanic_id, "Mechanic", class: "form-label" %>
-    <%= f.collection_select :mechanic_id, StaffMember.where(role: "mechanic").by_name, :id, :name,
-        { include_blank: "Not assigned yet" }, class: "form-select" %>
-  </div>
+  <% if writes.permitted_attribute?(:mechanic_id) %>
+    <div class="mb-3">
+      <%= f.label :mechanic_id, "Mechanic", class: "form-label" %>
+      <%= f.collection_select :mechanic_id, StaffMember.where(role: "mechanic").by_name, :id, :name,
+          { include_blank: "Not assigned yet" }, class: "form-select" %>
+    </div>
+  <% end %>
 
-  <div class="mb-3">
-    <%= f.label :status, class: "form-label" %>
-    <%= f.select :status, Repair.statuses.keys.map { |status| [status.tr("_", " "), status] }, {},
-        class: "form-select" %>
-  </div>
+  <% if writes.permitted_attribute?(:status) %>
+    <div class="mb-3">
+      <%= f.label :status, class: "form-label" %>
+      <%= f.select :status, Repair.statuses.keys.map { |status| [status.tr("_", " "), status] }, {},
+          class: "form-select" %>
+    </div>
+  <% end %>
 
-  <div class="mb-3">
-    <%= f.label :promised_on, class: "form-label" %>
-    <%= f.date_field :promised_on, class: ["form-control", { "is-invalid" => repair.errors[:promised_on].any? }] %>
-    <div class="invalid-feedback"><%= repair.errors[:promised_on].to_sentence %></div>
-  </div>
+  <% if writes.permitted_attribute?(:promised_on) %>
+    <div class="mb-3">
+      <%= f.label :promised_on, class: "form-label" %>
+      <%= f.date_field :promised_on, class: ["form-control", { "is-invalid" => repair.errors[:promised_on].any? }] %>
+      <div class="invalid-feedback"><%= repair.errors[:promised_on].to_sentence %></div>
+    </div>
+  <% end %>
 
-  <div class="mb-3">
-    <%= f.label :picked_up_at, "Picked up", class: "form-label" %>
-    <%= f.datetime_field :picked_up_at, class: ["form-control", { "is-invalid" => repair.errors[:picked_up_at].any? }] %>
-    <div class="invalid-feedback"><%= repair.errors[:picked_up_at].to_sentence %></div>
-  </div>
+  <% if writes.permitted_attribute?(:picked_up_at) %>
+    <div class="mb-3">
+      <%= f.label :picked_up_at, "Picked up", class: "form-label" %>
+      <%= f.datetime_field :picked_up_at, class: ["form-control", { "is-invalid" => repair.errors[:picked_up_at].any? }] %>
+      <div class="invalid-feedback"><%= repair.errors[:picked_up_at].to_sentence %></div>
+    </div>
+  <% end %>
 
-  <div class="mb-3">
-    <%= f.label :diagnosis, class: "form-label" %>
-    <%= f.rich_text_area :diagnosis, class: "trix-content" %>
-  </div>
+  <% if writes.permitted_attribute?(:diagnosis) %>
+    <div class="mb-3">
+      <%= f.label :diagnosis, class: "form-label" %>
+      <%= f.rich_text_area :diagnosis, class: "trix-content" %>
+    </div>
+  <% end %>
 
-  <div class="mb-3">
-    <%= f.label :intake_photos, "Intake photos", class: "form-label" %>
-    <%= f.file_field :intake_photos, multiple: true, accept: "image/jpeg,image/png",
-        class: ["form-control", { "is-invalid" => repair.errors[:intake_photos].any? }] %>
-    <div class="form-text">JPEG or PNG, up to 5 MB each. New photos are added to any photos already attached.</div>
-    <div class="invalid-feedback"><%= repair.errors[:intake_photos].to_sentence %></div>
-  </div>
+  <% if writes.permitted_attribute?(:intake_photos) %>
+    <div class="mb-3">
+      <%= f.label :intake_photos, "Intake photos", class: "form-label" %>
+      <%= f.file_field :intake_photos, multiple: true, accept: "image/jpeg,image/png",
+          class: ["form-control", { "is-invalid" => repair.errors[:intake_photos].any? }] %>
+      <div class="form-text">JPEG or PNG, up to 5 MB each. New photos are added to any photos already attached.</div>
+      <div class="invalid-feedback"><%= repair.errors[:intake_photos].to_sentence %></div>
+    </div>
+  <% end %>
 
-  <h2 class="h5 mt-4">Services</h2>
-  <%= f.fields_for :repair_jobs do |rf| %>
-    <%= render "repair_job_fields", f: rf %>
+  <% if writes.permitted_attribute?(:repair_jobs_attributes) %>
+    <h2 class="h5 mt-4">Services</h2>
+    <%= f.fields_for :repair_jobs do |rf| %>
+      <%= render "repair_job_fields", f: rf %>
+    <% end %>
   <% end %>
 
   <%= f.submit class: "btn btn-primary mt-3" %>

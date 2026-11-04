@@ -1,6 +1,8 @@
 <h1>Bikes</h1>
 
-<%= link_to "New bike", new_bike_path, class: "btn btn-primary mb-3" %>
+<% if policy(Bike).new? %>
+  <%= link_to "New bike", new_bike_path, class: "btn btn-primary mb-3" %>
+<% end %>
 
 <% if @bikes.empty? %>
   <p class="text-muted">No bikes yet.</p>

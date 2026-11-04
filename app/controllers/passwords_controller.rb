@@ -1,5 +1,7 @@
 class PasswordsController < ApplicationController
   allow_unauthenticated_access
+  # recuperar la password no tiene policy, ver docs/decisions.md
+  skip_after_action :verify_authorized
   before_action :set_user_by_token, only: %i[ edit update ]
 
   def new

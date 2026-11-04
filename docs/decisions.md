@@ -33,3 +33,14 @@ Every account has a role (`owner`, `mechanic` or `counter`), and the sign-up pag
 **Assumption I made:** the default is `mechanic`. The owner runs everything, including the price list and the staff. The counter takes bikes in, so it reads every repair and talks to every customer. A mechanic only works on the repairs assigned to them, and they are assigned through the member of the staff joined to the account. A new account is not joined to anyone, so as a mechanic it has no repairs of its own and reads none, which is less than the counter can see.
 
 **If the answer were that the counter should be the default:** a stranger who signs up would read every repair and every customer's name from the start, which is exactly what the owner asked to keep closed.
+
+## 5. Which actions don't ask a policy? (Lab 12)
+
+Every action asks its policy, and `ApplicationController` fails any action that forgets to (`verify_authorized`, and `verify_policy_scoped` on an index). Only these actions skip that check, each with `skip_after_action` in its own controller:
+
+- `SessionsController` (`new`, `create`, `destroy`): signing in and out. Before signing in there is no account to ask about, and signing out only ends your own session.
+- `PasswordsController` (`new`, `create`, `edit`, `update`): the forgotten password pages. The person has no session yet; the token in the link is what proves who they are.
+- `RegistrationsController` (`new`, `create`): signing up. There is no account yet, and the new account always gets the default role.
+- `PagesController` (`home`, `visiting`, `about`): pages with fixed text and no records, the same for every account. They still need a session.
+
+The services list and page are public too, but they do ask `JobPolicy`, which answers yes to everybody.

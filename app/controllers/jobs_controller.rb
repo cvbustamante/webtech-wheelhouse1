@@ -4,18 +4,22 @@ class JobsController < ApplicationController
   before_action :set_job, only: [:show, :edit, :update, :destroy]
 
   def index
-    @jobs = Job.by_name
+    authorize Job
+    @jobs = policy_scope(Job).by_name
   end
 
   def show
+    authorize @job
   end
 
   def new
     @job = Job.new
+    authorize @job
   end
 
   def create
     @job = Job.new(job_params)
+    authorize @job
     if @job.save
       redirect_to @job, notice: "#{@job.name} was created."
     else
@@ -24,9 +28,11 @@ class JobsController < ApplicationController
   end
 
   def edit
+    authorize @job
   end
 
   def update
+    authorize @job
     if @job.update(job_params)
       redirect_to @job, notice: "#{@job.name} was updated."
     else
@@ -35,6 +41,7 @@ class JobsController < ApplicationController
   end
 
   def destroy
+    authorize @job
     if @job.destroy
       redirect_to jobs_path, status: :see_other, notice: "#{@job.name} was deleted."
     else
